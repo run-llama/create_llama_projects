@@ -1,0 +1,37 @@
+{
+  "name": "embedded-tables",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "NEXT_PUBLIC_CHAT_API=http://localhost:8000/api/chat next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "ai": "^2",
+    "llamaindex": "0.0.35",
+    "next": "^13",
+    "react": "^18",
+    "react-dom": "^18",
+    "tailwind-merge": "^2",
+    "@radix-ui/react-slot": "^1",
+    "class-variance-authority": "^0.7",
+    "lucide-react": "^0.291",
+    "remark": "^14.0.3",
+    "remark-code-import": "^1.2.0",
+    "remark-gfm": "^3.0.1",
+    "remark-math": "^5.1.1",
+    "react-markdown": "^8.0.7",
+    "react-syntax-highlighter": "^15.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10",
+    "postcss": "^8",
+    "tailwindcss": "^3",
+    "typescript": "^5",
+    "@types/react-syntax-highlighter": "^15.5.6"
+  }
+}
