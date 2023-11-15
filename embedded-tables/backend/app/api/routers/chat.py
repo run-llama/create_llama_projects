@@ -5,14 +5,9 @@ from fastapi.responses import StreamingResponse
 from app.utils.json import json_to_model
 from app.utils.index import get_agent
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from llama_index import VectorStoreIndex
 from llama_index.llms.base import MessageRole, ChatMessage
-from llama_index.query_engine import RetrieverQueryEngine
 from llama_index.agent import OpenAIAgent
-from llama_index.callbacks.base_handler import BaseCallbackHandler
-from llama_index.callbacks.schema import CBEventType
 from pydantic import BaseModel
-from typing import Optional, Dict, Any
 import logging
 
 chat_router = r = APIRouter()
@@ -25,8 +20,6 @@ class _Message(BaseModel):
 
 class _ChatData(BaseModel):
     messages: List[_Message]
-
-
 
 
 @r.post("")

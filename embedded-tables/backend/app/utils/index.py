@@ -2,7 +2,6 @@ import logging
 import os
 
 from llama_index import (
-    SimpleDirectoryReader,
     StorageContext,
     VectorStoreIndex,
     load_index_from_storage,
@@ -19,8 +18,7 @@ from llama_index.llms import OpenAI
 from llama_index.callbacks import CallbackManager
 from llama_index.callbacks.base_handler import BaseCallbackHandler
 from llama_index.callbacks.schema import CBEventType
-from pydantic import BaseModel
-from llama_index.storage.docstore import SimpleDocumentStore
+
 from typing import Optional, Dict, Any, List, Tuple
 
 from pathlib import Path
@@ -215,7 +213,7 @@ def get_agent():
     )
     query_tools = [
         query_tool_2021,
-        # query_tool_2020
+        query_tool_2020
     ]
 
     handler = StreamingCallbackHandler()
@@ -226,6 +224,7 @@ def get_agent():
         llm=llm,
         callback_manager=callback_manager,
     )
+
     logger.info(f"Built agent.")
         
     return agent
