@@ -18,7 +18,6 @@ eggs/
 .eggs/
 etc/
 include/
-lib/
 lib64/
 parts/
 sdist/
