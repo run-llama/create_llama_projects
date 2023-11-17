@@ -63,34 +63,25 @@ async def chat(
     # response = agent.stream_chat(lastMessage.content, messages)
 
     # stream response
+    # NOTE: changed to sync due to issues with blocking the event loop
+    # see https://stackoverflow.com/a/75760884
     def event_generator():
         queue = agent.callback_manager.handlers[0].queue
 
         # stream response
         while True:
             next_item = queue.get(True, 60.0)  # set a generous timeout of 60 seconds
-            print((type(next_item), next_item))
             # check type of next_item, if string or not
             if isinstance(next_item, str):
                 yield next_item
-            else:
+            elif isinstance(next_item, StreamingAgentChatResponse):
                 response = cast(StreamingAgentChatResponse, next_item)
                 for token in response.response_gen:
-                    # # If client closes connection, stop sending events
-                    # if await request.is_disconnected():
-                    #     break
                     yield token
                 # if not string, then it is the end of the stream
                 break
-
-        # while len(queue) > 0:
-        #     item = queue.pop(0)
-        #     yield item
-
-        # for token in response.response_gen:
-        #     # If client closes connection, stop sending events
-        #     if await request.is_disconnected():
-        #         break
-        #     yield token
+            else:
+                # stringify
+                yield str(next_item)
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")

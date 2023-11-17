@@ -148,7 +148,9 @@ def _download_data(out_dir: str, wiki_titles: List[str]) -> None:
     return city_docs
 
 
-def _build_document_agents(storage_dir: str, city_docs: Dict[str, Any]) -> Dict: 
+def _build_document_agents(
+    storage_dir: str, city_docs: Dict[str, Any], callback_manager: CallbackManager
+) -> Dict: 
     """Build document agents."""
     node_parser = SentenceSplitter()
     llm = OpenAI(temperature=0, model="gpt-3.5-turbo")
@@ -218,6 +220,7 @@ def _build_document_agents(storage_dir: str, city_docs: Dict[str, Any]) -> Dict:
     You are a specialized agent designed to answer queries about {wiki_title}.
     You must ALWAYS use at least one of the tools provided when answering a question; do NOT rely on prior knowledge.\
     """,
+            callback_manager=callback_manager
         )
 
         agents[wiki_title] = agent
@@ -313,19 +316,10 @@ def get_agent():
     callback_manager = CallbackManager([handler])
 
     # build agent for each document
-    doc_agents = _build_document_agents(STORAGE_DIR, city_docs)
+    doc_agents = _build_document_agents(STORAGE_DIR, city_docs, callback_manager=callback_manager)
 
     # build top-level agent
     top_agent = _build_top_agent(STORAGE_DIR, doc_agents, callback_manager)
-
-    # handler = StreamingCallbackHandler()
-    # callback_manager = CallbackManager([handler])
-    # llm = OpenAI("gpt-4-1106-preview")
-    # agent = OpenAIAgent.from_tools(
-    #     tools=query_tools,
-    #     llm=llm,
-    #     callback_manager=callback_manager,
-    # )
 
     logger.info(f"Built agent.")
         
