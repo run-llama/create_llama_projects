@@ -1,16 +1,18 @@
-# RAG over Tesla 10-K's (with Embedded Tables)
+# Multi-document Agents
 
 This is a [LlamaIndex](https://www.llamaindex.ai/) project bootstrapped with [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama).
 
-We use our recursive retriever, combined with an OpenAI Agent, to create a bot capable of tabular/semi-structured/unstructured analysis within complex docs.
+We use our multi-document agent architecture:
+- Individual agent per document capable of semantic search/summarization
+- Orchestrator agent across documents that can pick relevant subsets
 
-This also streams the intermediate results from the agent via a custom Callback handler
+This also streams *all* intermediate results from the agent via a custom Callback handler.
 
 ## Main Files to Look At
 
 This extends beyond the simple `create-llama` example. To see changes, look at the following files:
-- `backend/app/utils/index.py` - contains core logic for constructing + getting agent
-- `backend/app/api/routers/chat.py` - contains implementation of chat endpoint
+- `backend/app/utils/index.py` - contains core logic for constructing + getting multi-doc agent
+- `backend/app/api/routers/chat.py` - contains implementation of chat endpoint + threading to stream intermediate responses.
 
 ## Getting Started
 
