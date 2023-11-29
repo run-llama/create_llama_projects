@@ -4,13 +4,14 @@ from fastapi.responses import StreamingResponse
 
 from threading import Thread
 from app.utils.json import json_to_model
-from app.utils.index import get_agent
+from app.utils.index import EventObject, get_agent
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from llama_index.llms.base import MessageRole, ChatMessage
 from llama_index.agent import OpenAIAgent
 from llama_index.chat_engine.types import StreamingAgentChatResponse
 from pydantic import BaseModel
 import logging
+import json
 
 chat_router = r = APIRouter()
 
@@ -22,6 +23,10 @@ class _Message(BaseModel):
 
 class _ChatData(BaseModel):
     messages: List[_Message]
+
+
+def convert_sse(obj: str | dict):
+    return "data: {}\n\n".format(json.dumps(obj))
 
 
 @r.post("")
@@ -70,16 +75,12 @@ async def chat(
         while True:
             next_item = queue.get(True, 60.0)  # set a generous timeout of 60 seconds
             # check type of next_item, if string or not
-            if isinstance(next_item, str):
-                yield next_item
+            if isinstance(next_item, EventObject):
+                yield convert_sse(dict(next_item))
             elif isinstance(next_item, StreamingAgentChatResponse):
                 response = cast(StreamingAgentChatResponse, next_item)
                 for token in response.response_gen:
-                    yield token
-                # if not string, then it is the end of the stream
+                    yield convert_sse(token)
                 break
-            else:
-                # stringify
-                yield str(next_item)
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
