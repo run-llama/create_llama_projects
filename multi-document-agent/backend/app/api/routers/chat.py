@@ -26,6 +26,7 @@ class _ChatData(BaseModel):
 
 
 def convert_sse(obj: str | dict):
+    """Convert the given object (or string) to a Server-Sent Event (SSE) event"""
     return "data: {}\n\n".format(json.dumps(obj))
 
 

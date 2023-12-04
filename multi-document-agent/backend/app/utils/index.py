@@ -37,6 +37,14 @@ DATA_DIR = "./data"  # directory containing the documents to index
 
 
 class EventObject(BaseModel):
+    """
+    Represents an event from the LlamaIndex callback handler.
+
+    Attributes:
+        type (str): The type of the event, e.g. "function_call".
+        payload (dict): The payload associated with the event.
+    """
+
     type: str
     payload: dict
 
@@ -86,7 +94,7 @@ class StreamingCallbackHandler(BaseCallbackHandler):
                 )
             )
         elif event_type == CBEventType.AGENT_STEP:
-            # put response into queue
+            # put LLM response into queue
             self._queue.put(payload["response"])
 
     @property
