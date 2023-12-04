@@ -1,4 +1,4 @@
-import { User2 } from "lucide-react";
+import { Shell, User2 } from "lucide-react";
 import Image from "next/image";
 
 export default function ChatAvatar({ role }: { role: string }) {
@@ -6,6 +6,14 @@ export default function ChatAvatar({ role }: { role: string }) {
     return (
       <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border bg-background shadow">
         <User2 className="h-4 w-4" />
+      </div>
+    );
+  }
+
+  if (role === "function") {
+    return (
+      <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border bg-background shadow">
+        <Shell className="h-4 w-4 animate-spin text-sky-400" />
       </div>
     );
   }

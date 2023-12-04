@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import ChatActions from "./chat-actions";
 import ChatMessage from "./chat-message";
 import { ChatHandler } from "./chat.interface";
+import { Loader2 } from "lucide-react";
 
 export default function ChatMessages(
   props: Pick<ChatHandler, "messages" | "isLoading" | "reload" | "stop">,
@@ -24,6 +25,11 @@ export default function ChatMessages(
     props.reload && !props.isLoading && isLastMessageFromAssistant;
   const showStop = props.stop && props.isLoading;
 
+  // `isPending` indicate
+  // that stream response is not yet received from the server,
+  // so we show a loading indicator to give a better UX.
+  const isPending = props.isLoading && !isLastMessageFromAssistant;
+
   useEffect(() => {
     scrollToBottom();
   }, [messageLength, lastMessage]);
@@ -37,6 +43,13 @@ export default function ChatMessages(
         {props.messages.map((m) => (
           <ChatMessage key={m.id} {...m} />
         ))}
+        {isPending && (
+          <div
+            className='flex justify-center items-center pt-10'
+          >
+            <Loader2 className="h-4 w-4 animate-spin"/>
+          </div>
+        )}
       </div>
       <div className="flex justify-end py-4">
         <ChatActions

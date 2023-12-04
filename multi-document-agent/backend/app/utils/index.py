@@ -1,5 +1,7 @@
+import json
 import logging
 import os
+from pydantic import BaseModel
 import requests
 
 from llama_index import (
@@ -8,13 +10,10 @@ from llama_index import (
     load_index_from_storage,
     SimpleDirectoryReader,
     SummaryIndex,
-    ServiceContext
+    ServiceContext,
 )
 from llama_index.readers.file.flat_reader import FlatReader
-from llama_index.node_parser import (
-    UnstructuredElementNodeParser,
-    SentenceSplitter
-)
+from llama_index.node_parser import UnstructuredElementNodeParser, SentenceSplitter
 from llama_index.query_engine import RetrieverQueryEngine
 from llama_index.retrievers import RecursiveRetriever
 from llama_index.tools import QueryEngineTool, ToolMetadata
@@ -37,6 +36,19 @@ STORAGE_DIR = "./storage"  # directory to cache the generated index
 DATA_DIR = "./data"  # directory containing the documents to index
 
 
+class EventObject(BaseModel):
+    """
+    Represents an event from the LlamaIndex callback handler.
+
+    Attributes:
+        type (str): The type of the event, e.g. "function_call".
+        payload (dict): The payload associated with the event.
+    """
+
+    type: str
+    payload: dict
+
+
 class StreamingCallbackHandler(BaseCallbackHandler):
     """Callback handler specifically designed to stream function calls to a queue."""
 
@@ -56,14 +68,15 @@ class StreamingCallbackHandler(BaseCallbackHandler):
     ) -> str:
         """Run when an event starts and return id of event."""
         if event_type == CBEventType.FUNCTION_CALL:
-            arguments_str = payload["function_call"]
-            tool_str = payload["tool"].name
-            print_str = (
-                "\n\n\n\n\n=== Calling Function ===\n\n\n\n"
-                f"Calling function: {tool_str} with args: {arguments_str}\n\n"
+            self._queue.put(
+                EventObject(
+                    type="function_call",
+                    payload={
+                        "arguments_str": payload["function_call"],
+                        "tool_str": payload["tool"].name,
+                    },
+                )
             )
-            # Add this to queue
-            self._queue.put(print_str)
 
     def on_event_end(
         self,
@@ -74,21 +87,15 @@ class StreamingCallbackHandler(BaseCallbackHandler):
     ) -> None:
         """Run when an event ends."""
         if event_type == CBEventType.FUNCTION_CALL:
-            response = payload["function_call_response"]
-            # Add this to queue
-            print_str = (
-                f"\n\nGot output: {response}\n"
-                "========================\n\n"
+            self._queue.put(
+                EventObject(
+                    type="function_call_response",
+                    payload={"response": payload["function_call_response"]},
+                )
             )
-            self._queue.put(print_str)
         elif event_type == CBEventType.AGENT_STEP:
-            # put response into queue
+            # put LLM response into queue
             self._queue.put(payload["response"])
-
-    # def reset(self) -> None:
-    #     """Reset the callback handler."""
-    #     self._queue = []
-    #     self._counter = 0
 
     @property
     def queue(self) -> Queue:
@@ -111,6 +118,7 @@ class StreamingCallbackHandler(BaseCallbackHandler):
     ) -> None:
         """Run when an overall trace is exited."""
         pass
+
 
 def _download_data(out_dir: str, wiki_titles: List[str]) -> None:
     """Download data."""
@@ -150,7 +158,7 @@ def _download_data(out_dir: str, wiki_titles: List[str]) -> None:
 
 def _build_document_agents(
     storage_dir: str, city_docs: Dict[str, Any], callback_manager: CallbackManager
-) -> Dict: 
+) -> Dict:
     """Build document agents."""
     node_parser = SentenceSplitter()
     llm = OpenAI(temperature=0, model="gpt-3.5-turbo")
@@ -174,7 +182,9 @@ def _build_document_agents(
             )
         else:
             vector_index = load_index_from_storage(
-                StorageContext.from_defaults(persist_dir=f"./{storage_dir}/{wiki_title}"),
+                StorageContext.from_defaults(
+                    persist_dir=f"./{storage_dir}/{wiki_title}"
+                ),
                 service_context=service_context,
             )
 
@@ -220,7 +230,7 @@ def _build_document_agents(
     You are a specialized agent designed to answer queries about {wiki_title}.
     You must ALWAYS use at least one of the tools provided when answering a question; do NOT rely on prior knowledge.\
     """,
-            callback_manager=callback_manager
+            callback_manager=callback_manager,
         )
 
         agents[wiki_title] = agent
@@ -229,7 +239,7 @@ def _build_document_agents(
 
 
 def _build_top_agent(
-        storage_dir: str, doc_agents: Dict, callback_manager: CallbackManager
+    storage_dir: str, doc_agents: Dict, callback_manager: CallbackManager
 ) -> OpenAIAgent:
     """Build top-level agent."""
     # define tool for each document agent
@@ -249,17 +259,14 @@ def _build_top_agent(
         all_tools.append(doc_tool)
     tool_mapping = SimpleToolNodeMapping.from_objects(all_tools)
     # if obj_index doesn't already exist
-    if not os.path.exists(f"./{storage_dir}/top"): 
+    if not os.path.exists(f"./{storage_dir}/top"):
         storage_context = StorageContext.from_defaults()
         obj_index = ObjectIndex.from_objects(
-            all_tools,
-            tool_mapping,
-            VectorStoreIndex,
-            storage_context=storage_context
+            all_tools, tool_mapping, VectorStoreIndex, storage_context=storage_context
         )
         storage_context.persist(persist_dir=f"./{storage_dir}/top")
         # TODO: don't access private property
-        
+
     else:
         # initialize storage context from existing storage
         storage_context = StorageContext.from_defaults(
@@ -276,7 +283,7 @@ def _build_top_agent(
 
     """,
         verbose=True,
-        callback_manager=callback_manager
+        callback_manager=callback_manager,
     )
 
     return top_agent
@@ -316,11 +323,13 @@ def get_agent():
     callback_manager = CallbackManager([handler])
 
     # build agent for each document
-    doc_agents = _build_document_agents(STORAGE_DIR, city_docs, callback_manager=callback_manager)
+    doc_agents = _build_document_agents(
+        STORAGE_DIR, city_docs, callback_manager=callback_manager
+    )
 
     # build top-level agent
     top_agent = _build_top_agent(STORAGE_DIR, doc_agents, callback_manager)
 
     logger.info(f"Built agent.")
-        
+
     return top_agent
