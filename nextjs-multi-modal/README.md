@@ -1,5 +1,16 @@
 This is a [LlamaIndex](https://www.llamaindex.ai/) project using [Next.js](https://nextjs.org/) bootstrapped with [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama).
 
+## Introduction
+
+This example allows you to have a chat using the [GPT4 Vision model](https://platform.openai.com/docs/guides/vision) from OpenAI. You can upload files and ask the model to describe them.
+
+To keep the example simple, we are not using a database or any other kind of storage for the images.
+Instead, they are sent to the model in base64 encoding. This is not very efficient and only works for small images
+like the ones in the `./data` folder.
+
+We recommended implementing a server upload and sending just the URL of the image instead.
+A straightforward way is to use [Vercel Blob](https://vercel.com/docs/storage/vercel-blob/quickstart#server-uploads) which is a file storage service that is easy to integrate with Next.js.
+
 ## Getting Started
 
 First, install the dependencies:
