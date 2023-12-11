@@ -13,7 +13,7 @@ function ChatMessageContents({
   contents: MessageContentDetail[];
 }) {
   const mediaContents = contents.filter(
-    (c) => c.type === "image_url" && c.image_url?.url
+    (c) => c.type === "image_url" && c.image_url?.url,
   );
   const textContent = contents.find((c) => c.type === "text");
 

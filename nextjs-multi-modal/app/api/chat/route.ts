@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 const getLastMessageContent = (
   textMessage: string,
-  imageUrl: string | undefined
+  imageUrl: string | undefined,
 ): MessageContent => {
   if (!imageUrl) return textMessage;
   return [
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
           error:
             "messages are required in the request body and the last message must be from the user",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -51,13 +51,13 @@ export async function POST(request: NextRequest) {
 
     const lastMessageContent = getLastMessageContent(
       lastMessage.content,
-      data?.imageUrl
+      data?.imageUrl,
     );
 
     const response = await chatEngine.chat(
       lastMessageContent as MessageContent,
       messages as ChatMessage[],
-      true
+      true,
     );
 
     // Transform the response into a readable stream
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

@@ -3,7 +3,7 @@ import { MessageContentDetail, RawMessage, Message } from "./ui/chat/index";
 
 const transformMessage = (
   message: RawMessage,
-  data: JSONValue | undefined
+  data: JSONValue | undefined,
 ): Message => {
   const msg = {
     ...message,
@@ -27,10 +27,10 @@ const transformMessage = (
 
 export const transformMessages = (
   messages: RawMessage[],
-  data: JSONValue[] | undefined
+  data: JSONValue[] | undefined,
 ) => {
   const result = messages.map((message, index) =>
-    transformMessage(message, data?.at(index))
+    transformMessage(message, data?.at(index)),
   );
   return result;
 };

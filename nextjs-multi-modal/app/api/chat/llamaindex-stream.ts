@@ -14,7 +14,7 @@ type ParserOptions = {
 function createParser(
   res: AsyncGenerator<any>,
   data: experimental_StreamData,
-  opts?: ParserOptions
+  opts?: ParserOptions,
 ) {
   const trimStartOfStream = trimStartOfStreamHelper();
   return new ReadableStream<string>({
@@ -54,7 +54,7 @@ export function LlamaIndexStream(
   opts?: {
     callbacks?: AIStreamCallbacksAndOptions;
     parserOptions?: ParserOptions;
-  }
+  },
 ): { stream: ReadableStream; data: experimental_StreamData } {
   const data = new experimental_StreamData();
   return {
