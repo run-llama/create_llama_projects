@@ -1,6 +1,6 @@
 import { MODEL } from "@/constants";
 import { Message, StreamingTextResponse } from "ai";
-import { MessageContent, OpenAI } from "llamaindex";
+import { ChatMessage, MessageContent, OpenAI } from "llamaindex";
 import { NextRequest, NextResponse } from "next/server";
 import { createChatEngine } from "./engine";
 import { LlamaIndexStream } from "./llamaindex-stream";
@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 const getLastMessageContent = (
   textMessage: string,
-  imageUrl: string | undefined,
+  imageUrl: string | undefined
 ): MessageContent => {
   if (!imageUrl) return textMessage;
   return [
@@ -38,26 +38,26 @@ export async function POST(request: NextRequest) {
           error:
             "messages are required in the request body and the last message must be from the user",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     const llm = new OpenAI({
       model: MODEL,
-      maxTokens: 2048,
+      maxTokens: 512,
     });
 
     const chatEngine = await createChatEngine(llm);
 
     const lastMessageContent = getLastMessageContent(
       lastMessage.content,
-      data?.imageUrl,
+      data?.imageUrl
     );
 
     const response = await chatEngine.chat(
       lastMessageContent as MessageContent,
-      messages,
-      true,
+      messages as ChatMessage[],
+      true
     );
 
     // Transform the response into a readable stream
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Return a StreamingTextResponse, which can be consumed by the client
-    return new StreamingTextResponse(stream);
+    return new StreamingTextResponse(stream.stream, {}, stream.data);
   } catch (error) {
     console.error("[LlamaIndex]", error);
     return NextResponse.json(
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 500,
-      },
+      }
     );
   }
 }

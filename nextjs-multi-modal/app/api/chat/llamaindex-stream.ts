@@ -3,46 +3,47 @@ import {
   createStreamDataTransformer,
   trimStartOfStreamHelper,
   type AIStreamCallbacksAndOptions,
+  experimental_StreamData,
+  JSONValue,
 } from "ai";
-import { MessageContentDetail } from "llamaindex";
 
 type ParserOptions = {
   image_url?: string;
 };
 
-type MessageContentDetailWithRole = MessageContentDetail & {
-  role: "user" | "assistant";
-};
-
-function createParser(res: AsyncGenerator<any>, opts?: ParserOptions) {
+function createParser(
+  res: AsyncGenerator<any>,
+  data: experimental_StreamData,
+  opts?: ParserOptions
+) {
   const trimStartOfStream = trimStartOfStreamHelper();
-  let firstToken = true;
   return new ReadableStream<string>({
+    start() {
+      // if image_url is provided, send it via the data stream
+      if (opts?.image_url) {
+        const message: JSONValue = {
+          type: "image_url",
+          image_url: {
+            url: opts.image_url,
+          },
+        };
+        data.append(message);
+      } else {
+        data.append({}); // send an empty image response for the user's message
+      }
+    },
     async pull(controller): Promise<void> {
       const { value, done } = await res.next();
       if (done) {
         controller.close();
+        data.append({}); // send an empty image response for the assistant's message
+        data.close();
         return;
-      }
-
-      if (firstToken) {
-        // if image_url is provided, send it as MessageContentDetail with the first token
-        if (opts?.image_url) {
-          const message: MessageContentDetailWithRole = {
-            role: "user", // set to "assistant" or leave blank to assign the content to the assistant
-            type: "image_url",
-            image_url: {
-              url: opts.image_url,
-            },
-          };
-          controller.enqueue(`data: ${JSON.stringify(message)}\n\n`);
-        }
-        firstToken = false;
       }
 
       const text = trimStartOfStream(value ?? "");
       if (text) {
-        controller.enqueue(`data: ${JSON.stringify(text)}\n\n`);
+        controller.enqueue(text);
       }
     },
   });
@@ -54,10 +55,12 @@ export function LlamaIndexStream(
     callbacks?: AIStreamCallbacksAndOptions;
     parserOptions?: ParserOptions;
   }
-): ReadableStream {
-  return createParser(res, opts?.parserOptions)
-    .pipeThrough(createCallbacksTransformer(opts?.callbacks))
-    .pipeThrough(
-      createStreamDataTransformer(opts?.callbacks?.experimental_streamData)
-    );
+): { stream: ReadableStream; data: experimental_StreamData } {
+  const data = new experimental_StreamData();
+  return {
+    stream: createParser(res, data, opts?.parserOptions)
+      .pipeThrough(createCallbacksTransformer(opts?.callbacks))
+      .pipeThrough(createStreamDataTransformer(true)),
+    data,
+  };
 }

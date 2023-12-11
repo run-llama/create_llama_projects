@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
-    "ai": "^2.2.27",
+    "ai": "^2.2.29",
     "class-variance-authority": "^0.7.0",
     "clsx": "^1.2.1",
     "dotenv": "^16.3.1",
