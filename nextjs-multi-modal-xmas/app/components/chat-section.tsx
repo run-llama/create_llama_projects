@@ -18,6 +18,7 @@ export default function ChatSection() {
     data,
   } = useChat({
     api: process.env.NEXT_PUBLIC_CHAT_API,
+    initialInput: "dummy",
   });
 
   const transformedMessages = useMemo(() => {
@@ -25,7 +26,7 @@ export default function ChatSection() {
   }, [messages, data]);
 
   return (
-    <div className="space-y-4 max-w-5xl w-full">
+    <div className="space-y-4 max-w-5xl w-full select-none">
       <ChatMessages
         messages={transformedMessages}
         isLoading={isLoading}

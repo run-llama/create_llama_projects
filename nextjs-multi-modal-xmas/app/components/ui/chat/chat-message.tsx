@@ -9,8 +9,10 @@ import { useCopyToClipboard } from "./use-copy-to-clipboard";
 
 function ChatMessageContents({
   contents,
+  role,
 }: {
   contents: MessageContentDetail[];
+  role: string;
 }) {
   const mediaContents = contents.filter(
     (c) => c.type === "image_url" && c.image_url?.url,
@@ -35,7 +37,9 @@ function ChatMessageContents({
           })}
         </div>
       )}
-      {textContent && <Markdown content={textContent.text!} />}
+      {textContent && role !== "user" && (
+        <Markdown content={textContent.text!} />
+      )}
     </>
   );
 }
@@ -51,7 +55,10 @@ export default function ChatMessage(chatMessage: Message) {
       <ChatAvatar role={chatMessage.role} />
       <div className="group flex flex-1 justify-between gap-2">
         <div className="flex-1 space-y-4">
-          <ChatMessageContents contents={chatMessage.content} />
+          <ChatMessageContents
+            contents={chatMessage.content}
+            role={chatMessage.role}
+          />
         </div>
         <Button
           onClick={onCopy}
