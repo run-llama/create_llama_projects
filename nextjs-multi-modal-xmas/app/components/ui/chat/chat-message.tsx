@@ -21,24 +21,34 @@ function ChatMessageContents({
 
   return (
     <>
+      {textContent && role !== "user" && (
+        <Markdown content={textContent.text!} />
+      )}
       {mediaContents.length > 0 && (
         <div className="flex gap-4 flex-wrap">
           {mediaContents.map((content, index) => {
             const image_url = content.image_url?.url;
             return (
               <div key={index}>
-                <img
-                  src={image_url}
-                  className="rounded-md max-w-[200px] shadow-md"
-                  alt=""
-                />
+                {role !== "user" ? (
+                  <a href={image_url} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={image_url}
+                      className="rounded-md max-w-[400px] shadow-md"
+                      alt=""
+                    />
+                  </a>
+                ) : (
+                  <img
+                    src={image_url}
+                    className="rounded-md max-w-[400px] shadow-md"
+                    alt=""
+                  />
+                )}
               </div>
             );
           })}
         </div>
-      )}
-      {textContent && role !== "user" && (
-        <Markdown content={textContent.text!} />
       )}
     </>
   );
