@@ -1,0 +1,3 @@
+[submodule "llamaindex-docs-agent"]
+	path = llamaindex-docs-agent
+	url = git@github.com:rsrohan99/llamaindex-docs-agent.git
