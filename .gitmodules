@@ -7,3 +7,6 @@
 [submodule "homeai"]
 	path = homeai
 	url = https://github.com/2sunflower33/homeai
+[submodule "sec-insights"]
+	path = sec-insights
+	url = https://github.com/run-llama/sec-insights

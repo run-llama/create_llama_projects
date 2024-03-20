@@ -8,3 +8,4 @@ Here's some fun projects created with the `create-llama` command.
 - [`llamaindex-docs-agent`](llamaindex-docs-agent/README.md): This project builds an advanced chatbot over the LlamaIndex TS documentation.
 - [`chat-llamaindex`](chat-llamaindex/README.md): Create and share LLM chatbots that know your data (PDF or text documents)
 - [`homeai`](homeai/README.md): The AI real estate agent
+- [`sec-insights`](sec-insights/README.md): Answer questions about SEC 10-K & 10-Q documents
