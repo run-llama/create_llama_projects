@@ -1,3 +1,6 @@
 [submodule "llamaindex-docs-agent"]
 	path = llamaindex-docs-agent
 	url = git@github.com:rsrohan99/llamaindex-docs-agent.git
+[submodule "chat-llamaindex"]
+	path = chat-llamaindex
+	url = git@github.com:run-llama/chat-llamaindex.git
