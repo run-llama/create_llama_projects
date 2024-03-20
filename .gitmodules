@@ -4,3 +4,6 @@
 [submodule "chat-llamaindex"]
 	path = chat-llamaindex
 	url = git@github.com:run-llama/chat-llamaindex.git
+[submodule "homeai"]
+	path = homeai
+	url = https://github.com/2sunflower33/homeai
