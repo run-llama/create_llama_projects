@@ -7,7 +7,7 @@ import { LlamaIndexStream } from "./llamaindex-stream";
 
 initObservability();
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 const convertMessageContent = (

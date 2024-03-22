@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "nextjs-edge-llamaparse",
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
@@ -11,7 +11,6 @@
   "dependencies": {
     "@llamaindex/edge": "^0.2.1",
     "@radix-ui/react-slot": "^1.0.2",
-    "@traceloop/node-server-sdk": "^0.5.19",
     "ai": "^2.2.27",
     "class-variance-authority": "^0.7.0",
     "clsx": "^1.2.1",
