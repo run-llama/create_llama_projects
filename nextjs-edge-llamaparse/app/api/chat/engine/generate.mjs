@@ -1,42 +1,29 @@
-import { serviceContextFromDefaults, VectorStoreIndex } from "@llamaindex/edge";
-import { storageContextFromDefaults } from "@llamaindex/edge/storage/StorageContext";
 import * as dotenv from "dotenv";
+import { VectorStoreIndex } from "@llamaindex/edge";
+import { storageContextFromDefaults } from "@llamaindex/edge/storage/StorageContext";
+import { PineconeVectorStore } from "@llamaindex/edge/storage/vectorStore/PineconeVectorStore";
 
-import { CHUNK_OVERLAP, CHUNK_SIZE, STORAGE_CACHE_DIR } from "./constants.mjs";
 import { getDocuments } from "./loader.mjs";
+import { checkRequiredEnvVars } from "./shared.mjs";
 
-// Load environment variables from local .env file
 dotenv.config();
 
-async function getRuntime(func) {
-  const start = Date.now();
-  await func();
-  const end = Date.now();
-  return end - start;
-}
+async function loadAndIndex() {
+	// load objects from storage and convert them into LlamaIndex Document objects
+	const documents = await getDocuments();
 
-async function generateDatasource(serviceContext) {
-  console.log(`Generating storage context...`);
-  // Split documents, create embeddings and store them in the storage context
-  const ms = await getRuntime(async () => {
-    const storageContext = await storageContextFromDefaults({
-      persistDir: STORAGE_CACHE_DIR,
-    });
-    const documents = await getDocuments();
-    await VectorStoreIndex.fromDocuments(documents, {
-      storageContext,
-      serviceContext,
-    });
-  });
-  console.log(`Storage context successfully generated in ${ms / 1000}s.`);
+	// create vector store
+	const vectorStore = new PineconeVectorStore();
+
+	// create index from all the Documentss and store them in Pinecone
+	console.log("Start creating embeddings...");
+	const storageContext = await storageContextFromDefaults({ vectorStore });
+	await VectorStoreIndex.fromDocuments(documents, { storageContext });
+	console.log("Successfully created embeddings and save to your Pinecone index.");
 }
 
 (async () => {
-  const serviceContext = serviceContextFromDefaults({
-    chunkSize: CHUNK_SIZE,
-    chunkOverlap: CHUNK_OVERLAP,
-  });
-
-  await generateDatasource(serviceContext);
-  console.log("Finished generating storage.");
+	checkRequiredEnvVars();
+	await loadAndIndex();
+	console.log("Finished generating storage.");
 })();
