@@ -1,5 +1,10 @@
 This is a [LlamaIndex](https://www.llamaindex.ai/) project using [Next.js](https://nextjs.org/) bootstrapped with [`create-llama`](https://github.com/run-llama/LlamaIndexTS/tree/main/packages/create-llama).
 
+## Prerequisites
+
+You'll need a Pinecone account, go to [Pinecone](https://www.pinecone.io/) to sign up for free.
+Set the **PINECONE_API_KEY**, **PINECONE_INDEX_NAME** and **PINECONE_ENVIRONMENT** environment variables to match your specific values.
+
 ## Getting Started
 
 First, install the dependencies:
