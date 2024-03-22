@@ -5,6 +5,8 @@ This is a [LlamaIndex](https://www.llamaindex.ai/) project using [Next.js](https
 You'll need a Pinecone account, go to [Pinecone](https://www.pinecone.io/) to sign up for free.
 Set the **PINECONE_API_KEY**, **PINECONE_INDEX_NAME** and **PINECONE_ENVIRONMENT** environment variables to match your specific values.
 
+We also need **OPENAI_API_KEY** to use the OpenAI API, and **LLAMA_CLOUD_API_KEY** to use parse the documents.
+
 ## Getting Started
 
 First, install the dependencies:
