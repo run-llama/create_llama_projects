@@ -1,9 +1,7 @@
 {
   "experimental": {
     "outputFileTracingIncludes": {
-      "/*": [
-        "./cache/**/*"
-      ]
+      "/*": ["./cache/**/*"]
     }
   }
 }
