@@ -6,7 +6,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate": "node app\\api\\chat\\engine\\generate.mjs",
+    "generate:win": "node app\\api\\chat\\engine\\generate.mjs",
+    "generate": "node app/api/chat/engine/generate.mjs",
     "format": "prettier --ignore-unknown --cache --check .",
     "format:write": "prettier --ignore-unknown --write ."
   },
