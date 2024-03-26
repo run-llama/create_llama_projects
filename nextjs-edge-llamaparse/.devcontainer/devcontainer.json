@@ -5,19 +5,12 @@
     "ghcr.io/devcontainers-contrib/features/typescript:2": {},
     "ghcr.io/devcontainers/features/python:1": {
       "version": "3.11",
-      "toolsToInstall": [
-        "flake8",
-        "black",
-        "mypy",
-        "poetry"
-      ]
+      "toolsToInstall": ["flake8", "black", "mypy", "poetry"]
     }
   },
   "customizations": {
     "codespaces": {
-      "openFiles": [
-        "README.md"
-      ]
+      "openFiles": ["README.md"]
     },
     "vscode": {
       "extensions": [
@@ -38,9 +31,6 @@
   "containerEnv": {
     "POETRY_VIRTUALENVS_CREATE": "false"
   },
-  "forwardPorts": [
-    3000,
-    8000
-  ],
+  "forwardPorts": [3000, 8000],
   "postCreateCommand": "npm install"
 }
