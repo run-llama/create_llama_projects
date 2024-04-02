@@ -14,7 +14,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function askFlightInformation(
+export async function chatWithFlightAssistant(
   userInput: string,
 ): Promise<UIStateItem> {
   "use server";
