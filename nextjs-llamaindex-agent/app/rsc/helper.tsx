@@ -1,9 +1,9 @@
 import ChatLoading from "@/app/components/ui/chat/chat-loading";
+import ChatMessage from "@/app/components/ui/chat/chat-message";
 import { trimStartOfStreamHelper } from "ai";
 import { createStreamableUI } from "ai/rsc";
 import { StreamingAgentChatResponse, ToolOutput } from "llamaindex";
 import { StreamableUIHandler } from "./type";
-import WikiSummaryCard from "./actions/wiki-assistant/ui/wiki-card";
 
 export const runAsyncFnWithoutBlocking = (
   fn: (..._args: any) => Promise<any>,
@@ -21,51 +21,17 @@ export const assistantResponseHandler: StreamableUIHandler = async (
   iterator,
 ) => {
   const trimStartOfStream = trimStartOfStreamHelper();
-  const detailFromWiki = `
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Curabitur auctor, lacus et ultricies aliquam, justo tortor
-    dignissim mi, et ultricies odio libero nec purus. Nulla
-    facilisi. In hac habitasse platea dictumst. Sed id odio
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Curabitur auctor, lacus et ultricies aliquam, justo tortor
-    dignissim mi, et ultricies odio libero nec purus. Nulla
-    facilisi. In hac habitasse platea dictumst. Sed id odio
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Curabitur auctor, lacus et ultricies aliquam, justo tortor
-    dignissim mi, et ultricies odio libero nec purus. Nulla
-    facilisi. In hac habitasse platea dictumst. Sed id odio
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Curabitur auctor, lacus et ultricies aliquam, justo tortor
-    dignissim mi, et ultricies odio libero nec purus. Nulla
-    facilisi. In hac habitasse platea dictumst. Sed id odio
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Curabitur auctor, lacus et ultricies aliquam, justo tortor
-    dignissim mi, et ultricies odio libero nec purus. Nulla
-    facilisi. In hac habitasse platea dictumst. Sed id odio
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Curabitur auctor, lacus et ultricies aliquam, justo tortor
-    dignissim mi, et ultricies odio libero nec purus. Nulla
-    facilisi. In hac habitasse platea dictumst. Sed id odio
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Curabitur auctor, lacus et ultricies aliquam, justo tortor
-    dignissim mi, et ultricies odio libero nec purus. Nulla
-    facilisi. In hac habitasse platea dictumst. Sed id odio
-  `
   let result = "";
   while (true) {
     const { value, done } = await iterator.next();
     if (done) {
-      uiStream.done(
-        <WikiSummaryCard result={result} detail={detailFromWiki} />,
-      );
+      uiStream.done(<ChatMessage role="assistant" message={result} />);
       break;
     }
     const text = trimStartOfStream(value.response ?? "");
     if (text) {
       result += text;
-      uiStream.update(
-        <WikiSummaryCard result={result} detail={detailFromWiki} />,
-      );
+      uiStream.update(<ChatMessage role="assistant" message={result} />);
     }
   }
   return uiStream;
