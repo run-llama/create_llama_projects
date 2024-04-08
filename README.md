@@ -9,4 +9,5 @@ Here's some fun projects created with the `create-llama` command.
 - [`chat-llamaindex`](chat-llamaindex/README.md): Create and share LLM chatbots that know your data (PDF or text documents)
 - [`homeai`](homeai/README.md): The AI real estate agent
 - [`sec-insights`](sec-insights/README.md): Answer questions about SEC 10-K & 10-Q documents
-- [`nextjs-edge-llamaparse`](nextjs-edge-llamaparse/README.md): This is a NextJs example that use Edge Runtime and allows you to parse documents using the LlamaParse 
+- [`nextjs-edge-llamaparse`](nextjs-edge-llamaparse/README.md): This is a NextJs example that use Edge Runtime and allows you to parse documents using the LlamaParse
+- [`rag-stream-intermediate-events-tutorial`](rag-stream-intermediate-events-tutorial/README.md): Send intermediate steps in a Python RAG pipeline to the frontend for an intuitive UX
