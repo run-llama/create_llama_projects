@@ -1,3 +1,5 @@
+import "server-only";
+
 import config from "@/config/tools.json";
 import { trimStartOfStreamHelper } from "ai";
 import { getMutableAIState } from "ai/rsc";
@@ -6,13 +8,9 @@ import { nanoid } from "nanoid";
 import { createAgentStreamableUI } from "../../helper";
 import { type AI } from "../../index";
 import { Message, StreamableUIHandler, UIStateItem } from "../../type";
-import { MAX_TOKEN } from "./shared";
 import WikiSummaryCard from "./ui/wiki-card";
 
-const llm = new OpenAI({
-  model: (process.env.MODEL as any) ?? "gpt-3.5-turbo",
-  maxTokens: MAX_TOKEN,
-});
+const llm = new OpenAI({ model: "gpt-4-turbo-preview" });
 
 const wikiToolResponseHandler: StreamableUIHandler = async (
   uiStream,
@@ -62,7 +60,6 @@ export async function submitUserMessage(
   const tools = await ToolFactory.createTools(config);
   const agent = new OpenAIAgent({
     tools,
-    verbose: true,
     llm,
   });
   const response = await agent.chat({

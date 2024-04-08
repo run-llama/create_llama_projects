@@ -1,3 +1,5 @@
+import "server-only";
+
 import { createAI } from "ai/rsc";
 import { nanoid } from "nanoid";
 import { chatWithFlightAssistant, submitUserMessage } from "./actions/";

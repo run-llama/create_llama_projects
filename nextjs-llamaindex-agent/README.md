@@ -4,22 +4,21 @@ This project was created to demonstrate the use of React Server Components with 
 
 ## Getting Started
 
-First, install the dependencies:
-
+First, you need to specify an `OPENAI_API_KEY` in an .env file in this directory.
 ```
-npm install
-```
-
-Second, generate the embeddings of the documents in the `./data` directory (if this folder exists - otherwise, skip this step):
-
-```
-npm run generate
+OPENAI_API_KEY=<openai_api_key>
 ```
 
-Third, run the development server:
+Then, install the dependencies:
 
 ```
-npm run dev
+pnpm install
+```
+
+Run the development server:
+
+```
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

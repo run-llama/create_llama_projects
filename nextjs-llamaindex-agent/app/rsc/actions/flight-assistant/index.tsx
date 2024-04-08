@@ -1,3 +1,5 @@
+import "server-only";
+
 import ChatLoading from "@/app/components/ui/chat/chat-loading";
 import ChatMessage from "@/app/components/ui/chat/chat-message";
 import { getMutableAIState, render } from "ai/rsc";
