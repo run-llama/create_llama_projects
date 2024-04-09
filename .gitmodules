@@ -10,3 +10,6 @@
 [submodule "sec-insights"]
 	path = sec-insights
 	url = https://github.com/run-llama/sec-insights
+[submodule "rag-stream-intermediate-events-tutorial"]
+	path = rag-stream-intermediate-events-tutorial
+	url = https://github.com/rsrohan99/rag-stream-intermediate-events-tutorial
