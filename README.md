@@ -11,3 +11,4 @@ Here's some fun projects created with the `create-llama` command.
 - [`sec-insights`](sec-insights/README.md): Answer questions about SEC 10-K & 10-Q documents
 - [`nextjs-edge-llamaparse`](nextjs-edge-llamaparse/README.md): This is a NextJs example that use Edge Runtime and allows you to parse documents using the LlamaParse
 - [`rag-stream-intermediate-events-tutorial`](rag-stream-intermediate-events-tutorial/README.md): Send intermediate steps in a Python RAG pipeline to the frontend for an intuitive UX
+- [`nextjs-llama3`](nextjs-llama3/README.md): Use Llama3 with LlamaIndex to create a RAG application
